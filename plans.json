@@ -1,7 +1,16 @@
 [
   { "id": "iec", "name": "חברת החשמל (תעריף בסיס)", "desc": "ללא הנחה - תעריף ברירת המחדל", "discount": 0, "startHour": 0, "endHour": 24, "isSunThu": false },
   
-  { "id": "pazgaz_yellow", "name": "פזגז - Yellow", "desc": "10% צבירה (מוגבל ל-600 ₪ בשנה)", "discount": 0.10, "startHour": 0, "endHour": 24, "isSunThu": false, "maxYearlyDiscount": 600 },
+  { 
+    "id": "pazgaz_yellow", 
+    "name": "פזגז - Yellow", 
+    "desc": "10% צבירה לארנק Yellow (לא הנחה בחשבונית, עד 600 ₪ בשנה)", 
+    "discount": 0.10, 
+    "startHour": 0, 
+    "endHour": 24, 
+    "isSunThu": false, 
+    "maxYearlyDiscount": 600 
+  },
   
   { "id": "hot_fixed_customer", "name": "HOT - לקוחות הוט", "desc": "7% הנחה (עד 100 ₪ בחודש)", "discount": 0.07, "startHour": 0, "endHour": 24, "isSunThu": false, "maxMonthlyDiscount": 100 },
   
