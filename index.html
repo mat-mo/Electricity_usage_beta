@@ -25,7 +25,8 @@
         <h1 class="text-4xl font-extrabold text-slate-900 dark:text-white mb-2 tracking-tight">מחשבון השוואת מחירי חשמל</h1>
     </header>
 
-    <main class="max-w-7xl mx-auto space-y-8"> <div class="glass-card bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 p-8">
+    <main class="max-w-7xl mx-auto space-y-8">
+        <div class="glass-card bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 p-8">
             <details class="group mb-8" open>
                 <summary class="flex items-center justify-center cursor-pointer list-none text-indigo-600 dark:text-indigo-400 font-medium">
                     <span class="ml-2 group-open:rotate-180 transition-transform">▼</span>
@@ -44,8 +45,12 @@
 
             <div class="relative group">
                 <input type="file" id="csvFileInput" accept=".csv" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
-                <div id="dropZone" class="border-2 border-dashed border-slate-200 dark:border-slate-600 rounded-xl p-12 text-center transition-all group-hover:border-indigo-400 group-hover:bg-indigo-50/30 dark:group-hover:bg-indigo-900/10">
-                    <p id="dropZoneText" class="text-slate-600 dark:text-slate-400 font-semibold text-lg">גררו לכאן את קובץ ה-CSV של חברת החשמל</p>
+                <div id="dropZone" class="border-2 border-dashed border-slate-200 dark:border-slate-600 rounded-xl p-12 text-center transition-all group-hover:border-indigo-400 group-hover:bg-indigo-50/30 dark:group-hover:bg-indigo-900/10 cursor-pointer">
+                    <div id="dropZoneText" class="text-slate-600 dark:text-slate-400 font-semibold text-lg">
+                        גררו לכאן את קובץ ה-CSV של חברת החשמל
+                        <br>
+                        <span class="text-sm font-normal opacity-70">(או לחצו כאן לבחירה)</span>
+                    </div>
                     <div id="fileNameDisplay" class="hidden mt-4 font-bold text-sm px-6 py-2 rounded-full inline-block"></div>
                 </div>
             </div>
@@ -64,7 +69,7 @@
 
         <div id="dashboard" class="hidden space-y-8">
             <div class="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-lg border border-slate-100 dark:border-slate-700">
-                <h3 class="text-2xl font-bold mb-6 border-b dark:border-slate-700 pb-4">השוואת עלויות (תחזית ל-3 שנים)</h3>
+                <h3 class="text-2xl font-bold mb-6 border-b dark:border-slate-700 pb-4">תוצאות השוואת ספקים</h3>
                 <div class="overflow-x-auto">
                     <table class="w-full text-right border-collapse">
                         <thead>
@@ -72,7 +77,7 @@
                                 <th class="p-4 font-bold w-1/4">ספק ומסלול</th>
                                 <th class="p-4 font-bold w-1/4">הטבה</th>
                                 <th class="p-4 font-bold text-center">עלות חודשית משוערת</th>
-                                <th class="p-4 font-bold text-indigo-600 dark:text-indigo-400 text-lg">חיסכון מצטבר (3 שנים)</th>
+                                <th class="p-4 font-bold text-indigo-600 dark:text-indigo-400 text-lg">חיסכון שנתי משוער</th>
                             </tr>
                         </thead>
                         <tbody id="comparisonBody"></tbody>
@@ -177,15 +182,12 @@
             const daysCount = new Set(data.map(r => r.date)).size;
 
             const processedPlans = providerPlans.map(p => {
-                let yearlySavings = [];
-                let years = [1, 2, 3];
+                let yearSavingsArr = [];
                 let currentAvgMonthlyCost = 0;
+                let averageAnnualSavings = 0;
 
-                // Determine discount rates for Year 1, 2, 3
-                let discounts = p.discounts ? p.discounts : [p.discount, p.discount, p.discount];
-                
-                // Calculate saving for each year
-                let total3YearSavings = 0;
+                let discounts = p.discounts ? p.discounts : [p.discount];
+                let totalSavingsSum = 0;
 
                 discounts.forEach((yearDiscount, idx) => {
                     let yearCost = 0;
@@ -198,27 +200,25 @@
 
                     let rawYearlySaving = (iecTotal - yearCost) / daysCount * 365;
 
-                    // Apply Caps
                     if (p.maxYearlyDiscount && rawYearlySaving > p.maxYearlyDiscount) rawYearlySaving = p.maxYearlyDiscount;
                     if (p.maxMonthlyDiscount && rawYearlySaving > (p.maxMonthlyDiscount * 12)) rawYearlySaving = p.maxMonthlyDiscount * 12;
 
-                    yearlySavings.push(rawYearlySaving);
-                    total3YearSavings += rawYearlySaving;
+                    yearSavingsArr.push(rawYearlySaving);
+                    totalSavingsSum += rawYearlySaving;
 
-                    // Use Year 1 for the "Monthly Cost" display
                     if (idx === 0) currentAvgMonthlyCost = (yearCost / daysCount * 365) / 12;
                 });
 
-                return { ...p, yearlySavings, total3YearSavings, currentAvgMonthlyCost };
+                averageAnnualSavings = totalSavingsSum / discounts.length;
+
+                return { ...p, yearSavingsArr, averageAnnualSavings, currentAvgMonthlyCost };
             });
 
-            // Sort by TOTAL 3-Year Savings
-            processedPlans.sort((a, b) => b.total3YearSavings - a.total3YearSavings);
+            processedPlans.sort((a, b) => b.averageAnnualSavings - a.averageAnnualSavings);
 
             document.getElementById('comparisonBody').innerHTML = processedPlans.map((p, i) => {
-                // Determine Badge
                 let badges = '';
-                const isCapped = p.yearlySavings.some(s => 
+                const isCapped = p.yearSavingsArr.some(s => 
                     (p.maxYearlyDiscount && s >= p.maxYearlyDiscount) || 
                     (p.maxMonthlyDiscount && s >= (p.maxMonthlyDiscount * 12))
                 );
@@ -226,21 +226,20 @@
                 if (isCapped) badges += `<span title="החיסכון מוגבל ע''י הספק" class="cursor-help text-[10px] bg-red-100 text-red-700 px-2 py-0.5 rounded-full mr-1">מוגבל תקרה</span>`;
                 if (p.discounts) badges += `<span class="text-[10px] bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full mr-1">הנחה צומחת</span>`;
 
-                // Format Savings Display
                 let savingsDisplay = '';
                 if (p.discounts) {
                     savingsDisplay = `
-                        <div class="text-lg font-bold text-indigo-600 dark:text-indigo-400">₪${p.total3YearSavings.toFixed(0)}</div>
+                        <div class="text-lg font-bold text-indigo-600 dark:text-indigo-400">₪${p.averageAnnualSavings.toFixed(0)} <span class="text-xs text-slate-500 font-normal">(ממוצע)</span></div>
                         <div class="text-[10px] text-slate-500 mt-1 space-y-0.5">
-                            <div>שנה א': ₪${p.yearlySavings[0].toFixed(0)}</div>
-                            <div>שנה ב': ₪${p.yearlySavings[1].toFixed(0)}</div>
-                            <div>שנה ג': ₪${p.yearlySavings[2].toFixed(0)}</div>
+                            <div>שנה א': ₪${p.yearSavingsArr[0].toFixed(0)}</div>
+                            <div>שנה ב': ₪${p.yearSavingsArr[1].toFixed(0)}</div>
+                            <div>שנה ג': ₪${p.yearSavingsArr[2].toFixed(0)}</div>
                         </div>
                     `;
                 } else {
                     savingsDisplay = `
-                        <div class="text-lg font-bold ${p.total3YearSavings > 0 ? 'text-green-600 dark:text-green-400' : 'text-slate-400'}">
-                            ${p.total3YearSavings > 0 ? '₪' + p.yearlySavings[0].toFixed(0) + ' <span class="text-xs font-normal text-slate-500">/ שנה</span>' : '-'}
+                        <div class="text-lg font-bold ${p.averageAnnualSavings > 0 ? 'text-green-600 dark:text-green-400' : 'text-slate-400'}">
+                            ${p.averageAnnualSavings > 0 ? '₪' + p.averageAnnualSavings.toFixed(0) : '-'}
                         </div>
                     `;
                 }
@@ -306,7 +305,7 @@
             });
         }
 
-        function resetUI() { document.getElementById('errorMessage').classList.add('hidden'); document.getElementById('dropZone').className = "border-2 border-dashed border-slate-200 dark:border-slate-600 rounded-xl p-12 text-center transition-all group-hover:border-indigo-400 group-hover:bg-indigo-50/30 dark:group-hover:bg-indigo-900/10"; }
+        function resetUI() { document.getElementById('errorMessage').classList.add('hidden'); document.getElementById('dropZone').className = "border-2 border-dashed border-slate-200 dark:border-slate-600 rounded-xl p-12 text-center transition-all group-hover:border-indigo-400 group-hover:bg-indigo-50/30 dark:group-hover:bg-indigo-900/10 cursor-pointer"; }
         function showError(msg) { const errDiv = document.getElementById('errorMessage'); document.getElementById('errorText').textContent = msg; errDiv.classList.remove('hidden'); document.getElementById('dropZone').classList.add('border-red-400', 'bg-red-50', 'dark:bg-red-900/10'); }
     </script>
 </body>
