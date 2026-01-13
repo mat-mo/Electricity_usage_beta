@@ -1,6 +1,6 @@
 [
   { "id": "iec", "name": "חברת החשמל", "desc": "ללא הנחה", "discount": 0, "startHour": 0, "endHour": 24, "isSunThu": false },
-  { "id": "electra_super", "name": "אלקטרה - Superpower", "desc": "21% הנחה בלילה (23-07, א-ה)", "discount": 0.21, "startHour": 23, "endHour": 7, "isSunThu": true },
+  { "id": "electra_super", "name": "אלקטרה - לילה", "desc": "21% הנחה בלילה (23-07, א-ה)", "discount": 0.21, "startHour": 23, "endHour": 7, "isSunThu": true },
   { "id": "bezeq_night", "name": "בזק / סלקום / HOT - לילה", "desc": "20% הנחה בלילה (23-07, א-ה)", "discount": 0.20, "startHour": 23, "endHour": 7, "isSunThu": true },
   { "id": "cellcom_fam", "name": "סלקום - משפחתי", "desc": "18% הנחה אחה\"צ (14-20, א-ה)", "discount": 0.18, "startHour": 14, "endHour": 20, "isSunThu": true },
   { "id": "electra_day", "name": "אלקטרה - יום", "desc": "16% הנחה ביום (07-17, א-ה)", "discount": 0.16, "startHour": 7, "endHour": 17, "isSunThu": true },
