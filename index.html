@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>מחשבון השוואת חשמל 2026</title>
+    <title>מחשבון השוואת מחירי חשמל 2026</title>
+    <link rel="icon" type="image/png" href="favicon.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -23,7 +24,7 @@
             <span id="themeIcon">🌙</span>
         </button>
         <div class="inline-block px-4 py-1.5 mb-4 text-xs font-semibold tracking-wider text-indigo-600 dark:text-indigo-400 uppercase bg-indigo-100 dark:bg-indigo-900/30 rounded-full">מעודכן לינואר 2026</div>
-        <h1 class="text-4xl font-extrabold text-slate-900 dark:text-white mb-2 tracking-tight">מחשבון השוואת חשמל</h1>
+        <h1 class="text-4xl font-extrabold text-slate-900 dark:text-white mb-2 tracking-tight">מחשבון השוואת מחירי חשמל</h1>
     </header>
 
     <main class="max-w-6xl mx-auto space-y-8">
@@ -31,10 +32,10 @@
             <details class="group mb-8" open>
                 <summary class="flex items-center justify-center cursor-pointer list-none text-indigo-600 dark:text-indigo-400 font-medium">
                     <span class="ml-2 group-open:rotate-180 transition-transform">▼</span>
-                    איך משיגים את קובץ נתוני הצריכה?
+                    איך מבצעים השוואת מחירים?
                 </summary>
                 <div class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-6 text-sm mt-4 text-right border border-slate-100 dark:border-slate-700">
-                    <ol class="space-y-3 list-decimal pr-4">
+                    <ol class="space-y-3 list-decimal pr-4 text-slate-700 dark:text-slate-300">
                         <li>התחברו לאתר חברת החשמל: <a href="https://www.iec.co.il/consumption-info-menu/remote-reading-info" target="_blank" class="text-indigo-600 dark:text-indigo-400 font-bold underline">לחצו כאן</a></li>
                         <li>לחצו על כפתור <b>"מצב צריכה עדכני"</b></li>
                         <li>לחצו על <b>"קבלת קובץ אקסל עם נתוני צריכה מהשנה האחרונה למייל"</b></li>
@@ -50,6 +51,13 @@
                     <div id="fileNameDisplay" class="hidden mt-4 font-bold text-sm px-6 py-2 rounded-full inline-block"></div>
                 </div>
             </div>
+
+            <div class="mt-6 flex items-center justify-center gap-2 text-slate-500 dark:text-slate-400 text-xs bg-slate-50 dark:bg-slate-900/40 py-2 px-4 rounded-lg border border-slate-100 dark:border-slate-800">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-600 dark:text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+                <span><b>הפרטיות שלכם חשובה:</b> ניתוח הנתונים מתבצע באופן מקומי על הדפדפן שלכם בלבד. הקובץ אינו נשלח לאף שרת ואינו נשמר במערכת.</span>
+            </div>
             
             <div id="errorMessage" class="hidden mt-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 rounded-xl text-center font-medium">
                 ⚠️ <span id="errorText"></span>
@@ -58,15 +66,15 @@
 
         <div id="dashboard" class="hidden space-y-8">
             <div class="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-lg border border-slate-100 dark:border-slate-700">
-                <h3 class="text-2xl font-bold mb-6 border-b dark:border-slate-700 pb-4">תוצאות השוואת ספקים</h3>
+                <h3 class="text-2xl font-bold mb-6 border-b dark:border-slate-700 pb-4">השוואת עלויות לפי ספק</h3>
                 <div class="overflow-x-auto">
                     <table class="w-full text-right border-collapse">
                         <thead>
                             <tr class="text-slate-500 dark:text-slate-400 text-sm border-b dark:border-slate-700">
-                                <th class="p-4">ספק ומסלול</th>
-                                <th class="p-4">הטבה</th>
-                                <th class="p-4">עלות לתקופה</th>
-                                <th class="p-4">חיסכון שנתי</th>
+                                <th class="p-4 font-bold">ספק ומסלול</th>
+                                <th class="p-4 font-bold">הטבה</th>
+                                <th class="p-4 font-bold">עלות לתקופה</th>
+                                <th class="p-4 font-bold">חיסכון שנתי משוער</th>
                             </tr>
                         </thead>
                         <tbody id="comparisonBody"></tbody>
@@ -76,7 +84,7 @@
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-md border border-slate-100 dark:border-slate-700">
-                    <h3 class="font-bold mb-6 text-center text-lg">פרופיל צריכה ממוצע</h3>
+                    <h3 class="font-bold mb-6 text-center text-lg">פרופיל צריכה ממוצע (קוט"ש)</h3>
                     <div class="relative h-[450px]"><canvas id="hourlyRadarChart"></canvas></div>
                     <div class="flex justify-center gap-6 mt-4 text-xs font-bold">
                         <div class="flex items-center gap-2">
@@ -88,7 +96,7 @@
                     </div>
                 </div>
                 <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-md border border-slate-100 dark:border-slate-700">
-                    <h3 class="font-bold mb-6 text-center text-lg">צריכה יומית</h3>
+                    <h3 class="font-bold mb-6 text-center text-lg">צריכה יומית לאורך התקופה</h3>
                     <div class="h-[450px]"><canvas id="dailyChart"></canvas></div>
                 </div>
             </div>
@@ -99,8 +107,19 @@
         const BASE_RATE = 0.6432;
         let charts = {};
         let lastProcessedData = null;
+        let providerPlans = [];
 
-        // Theme Logic
+        async function loadPlans() {
+            try {
+                const response = await fetch('plans.json');
+                if (!response.ok) throw new Error();
+                providerPlans = await response.json();
+            } catch (err) {
+                showError("שגיאה בטעינת קובץ המסלולים (plans.json)");
+            }
+        }
+        loadPlans();
+
         const toggleBtn = document.getElementById('themeToggle');
         toggleBtn.addEventListener('click', () => {
             document.documentElement.classList.toggle('dark');
@@ -124,19 +143,6 @@
             }
         });
 
-        function showError(msg) {
-            const errDiv = document.getElementById('errorMessage');
-            document.getElementById('errorText').textContent = msg;
-            errDiv.classList.remove('hidden');
-            document.getElementById('dropZone').classList.add('border-red-400', 'bg-red-50', 'dark:bg-red-900/10');
-        }
-
-        function resetUI() {
-            document.getElementById('errorMessage').classList.add('hidden');
-            document.getElementById('dropZone').classList.remove('border-red-400', 'bg-red-50', 'dark:bg-red-900/10');
-            document.getElementById('fileNameDisplay').classList.add('hidden');
-        }
-
         function validateAndProcess(raw, fileName) {
             const headIdx = raw.findIndex(r => r[0] && r[0].includes("תאריך"));
             if (headIdx === -1) return showError("פורמט הקובץ אינו מזוהה.");
@@ -153,7 +159,7 @@
 
             document.getElementById('fileNameDisplay').textContent = fileName;
             document.getElementById('fileNameDisplay').classList.remove('hidden');
-            document.getElementById('fileNameDisplay').classList.add('bg-indigo-100', 'dark:bg-indigo-900', 'text-indigo-700', 'dark:text-indigo-300');
+            document.getElementById('fileNameDisplay').className = "mt-4 font-bold text-sm px-6 py-2 rounded-full inline-block bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300";
             
             processData(cleanData);
         }
@@ -161,31 +167,34 @@
         function processData(data) {
             lastProcessedData = data;
             const isSunThu = (d) => d >= 0 && d <= 4;
-            const isNight = (h) => h >= 23 || h < 7;
+            const isInsideWindow = (h, start, end) => {
+                if (start === 0 && end === 24) return true;
+                if (start > end) return (h >= start || h < end);
+                return (h >= start && h < end);
+            };
 
-            const plans = [
-                { name: "חברת החשמל", desc: "ללא הנחה", calc: (h, d) => 0 },
-                { name: "אלקטרה - Superpower", desc: "21% הנחה בלילה (23-07, א-ה)", calc: (h, d) => (isNight(h) && isSunThu(d)) ? 0.21 : 0 },
-                { name: "בזק / סלקום / HOT - לילה", desc: "20% הנחה בלילה (23-07, א-ה)", calc: (h, d) => (isNight(h) && isSunThu(d)) ? 0.20 : 0 },
-                { name: "סלקום - משפחתי", desc: "18% הנחה אחה\"צ (14-20, א-ה)", calc: (h, d) => (h >= 14 && h < 20 && isSunThu(d)) ? 0.18 : 0 },
-                { name: "אלקטרה - יום", desc: "16% הנחה ביום (07-17, א-ה)", calc: (h, d) => (h >= 7 && h < 17 && isSunThu(d)) ? 0.16 : 0 },
-                { name: "אמישראגז - קבוע", desc: "7% הנחה קבועה 24/7", calc: (h, d) => 0.07 },
-                { name: "אלקטרה - קבוע", desc: "6.5% הנחה קבועה 24/7", calc: (h, d) => 0.065 }
-            ];
+            providerPlans.forEach(p => {
+                p.total = 0;
+                data.forEach(r => {
+                    const timeMatch = isInsideWindow(r.hour, p.startHour, p.endHour);
+                    const dayMatch = p.isSunThu ? isSunThu(r.day) : true;
+                    const discount = (timeMatch && dayMatch) ? p.discount : 0;
+                    p.total += r.kwh * (BASE_RATE * (1 - discount));
+                });
+            });
 
-            plans.forEach(p => p.total = 0);
-            data.forEach(r => plans.forEach(p => p.total += r.kwh * (BASE_RATE * (1 - p.calc(r.hour, r.day)))));
-            const std = plans.find(p => p.name === "חברת החשמל").total;
+            const stdPlan = providerPlans.find(p => p.id === 'iec');
+            const stdCost = stdPlan ? stdPlan.total : 0;
             const daysCount = new Set(data.map(r => r.date)).size;
-            plans.sort((a, b) => a.total - b.total);
+            const sortedPlans = [...providerPlans].sort((a, b) => a.total - b.total);
 
-            document.getElementById('comparisonBody').innerHTML = plans.map((p, i) => `
+            document.getElementById('comparisonBody').innerHTML = sortedPlans.map((p, i) => `
                 <tr class="border-b dark:border-slate-700 transition ${i === 0 ? 'bg-green-50/50 dark:bg-green-900/20' : ''}">
                     <td class="p-4 font-bold">${p.name}</td>
                     <td class="p-4 text-xs text-slate-500 dark:text-slate-400">${p.desc}</td>
                     <td class="p-4 font-bold">₪${p.total.toFixed(2)}</td>
-                    <td class="p-4 font-bold ${p.total < std ? 'text-green-600 dark:text-green-400' : 'text-slate-400'}">
-                        ${p.total < std ? '₪' + ((std - p.total) / daysCount * 365).toFixed(0) : '-'}
+                    <td class="p-4 font-bold ${p.total < stdCost ? 'text-green-600 dark:text-green-400' : 'text-slate-400'}">
+                        ${p.total < stdCost ? '₪' + ((stdCost - p.total) / daysCount * 365).toFixed(0) : '-'}
                     </td>
                 </tr>`).join('');
 
@@ -230,14 +239,14 @@
                 data: { labels: Object.keys(daily), datasets: [{ data: Object.values(daily), backgroundColor: '#6366f1' }] },
                 options: {
                     responsive: true, maintainAspectRatio: false,
-                    scales: { 
-                        x: { ticks: { color: textColor }, grid: { display: false } }, 
-                        y: { position: 'left', ticks: { color: textColor }, grid: { color: gridColor } } 
-                    },
+                    scales: { x: { ticks: { color: textColor }, grid: { display: false } }, y: { position: 'left', ticks: { color: textColor }, grid: { color: gridColor } } },
                     plugins: { legend: { display: false } }
                 }
             });
         }
+
+        function resetUI() { document.getElementById('errorMessage').classList.add('hidden'); document.getElementById('dropZone').className = "border-2 border-dashed border-slate-200 dark:border-slate-600 rounded-xl p-12 text-center transition-all group-hover:border-indigo-400 group-hover:bg-indigo-50/30 dark:group-hover:bg-indigo-900/10"; }
+        function showError(msg) { const errDiv = document.getElementById('errorMessage'); document.getElementById('errorText').textContent = msg; errDiv.classList.remove('hidden'); document.getElementById('dropZone').classList.add('border-red-400', 'bg-red-50', 'dark:bg-red-900/10'); }
     </script>
 </body>
 </html>
