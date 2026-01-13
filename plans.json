@@ -1,8 +1,71 @@
 [
   {
+    "id": "iec",
+    "name": "חברת החשמל (תעריף בסיס)",
+    "desc": "ללא הנחה - תעריף ברירת המחדל",
+    "discount": 0,
+    "startHour": 0,
+    "endHour": 24,
+    "isSunThu": false
+  },
+  {
+    "id": "pazgaz_yellow",
+    "name": "פזגז - Yellow",
+    "desc": "10% צבירה לאפליקציית Yellow (מוגבל לצבירה של עד 600 ₪ בשנה)",
+    "discount": 0.10,
+    "startHour": 0,
+    "endHour": 24,
+    "isSunThu": false
+  },
+  {
+    "id": "pazgaz_fixed",
+    "name": "פזגז - הנחה קבועה",
+    "desc": "6% הנחה קבועה בכל שעות היממה",
+    "discount": 0.06,
+    "startHour": 0,
+    "endHour": 24,
+    "isSunThu": false
+  },
+  {
+    "id": "hot_fixed_customer",
+    "name": "HOT - לקוחות הוט",
+    "desc": "7% הנחה קבועה ללקוחות הטריפל/המובייל (מוגבל להנחה של עד 100 ₪ בחודש)",
+    "discount": 0.07,
+    "startHour": 0,
+    "endHour": 24,
+    "isSunThu": false
+  },
+  {
+    "id": "hot_fixed_general",
+    "name": "HOT - מסלול כללי 24/7",
+    "desc": "5% הנחה קבועה (צומח ל-6% בשנה השנייה ול-7% בשלישית)",
+    "discount": 0.05,
+    "startHour": 0,
+    "endHour": 24,
+    "isSunThu": false
+  },
+  {
+    "id": "hot_day",
+    "name": "HOT - חוסכים ביום",
+    "desc": "15% הנחה בימים א'-ה' בין השעות 07:00-17:00",
+    "discount": 0.15,
+    "startHour": 7,
+    "endHour": 17,
+    "isSunThu": true
+  },
+  {
+    "id": "hot_night",
+    "name": "HOT - חוסכים בלילה",
+    "desc": "20% הנחה בימים א'-ה' בין השעות 23:00-07:00",
+    "discount": 0.20,
+    "startHour": 23,
+    "endHour": 7,
+    "isSunThu": true
+  },
+  {
     "id": "bezeq_fixed",
     "name": "בזק חשמל - מסלול קבוע",
-    "desc": "6% הנחה קבועה בכל שעות היממה לכל סוגי המונים",
+    "desc": "6% הנחה קבועה בכל שעות היממה (תעריף מעודכן ללקוחות חדשים)",
     "discount": 0.06,
     "startHour": 0,
     "endHour": 24,
@@ -27,82 +90,10 @@
     "isSunThu": true
   },
   {
-    "id": "pazgaz_fixed",
-    "name": "פזגז חשמל - הנחה קבועה",
-    "desc": "6% הנחה קבועה בכל שעות היממה",
-    "discount": 0.06,
-    "startHour": 0,
-    "endHour": 24,
-    "isSunThu": false
-  },
-  {
-    "id": "pazgaz_yellow",
-    "name": "פזגז חשמל - Yellow",
-    "desc": "10% צבירה לאפליקציית Yellow בכל שעות היממה",
-    "discount": 0.10,
-    "startHour": 0,
-    "endHour": 24,
-    "isSunThu": false
-  },
-  {
     "id": "amisragas_fixed",
     "name": "אמישראגז חשמל",
-    "desc": "7% הנחה קבועה בכל שעות היממה ללקוחות החברה",
+    "desc": "7% הנחה קבועה ללקוחות הגז של החברה (6% ללקוחות אחרים)",
     "discount": 0.07,
-    "startHour": 0,
-    "endHour": 24,
-    "isSunThu": false
-  },
-  {
-    "id": "hot_fixed_customer",
-    "name": "HOT - לקוחות הוט",
-    "desc": "7% הנחה קבועה 24/7 ללקוחות הטריפל/מובייל",
-    "discount": 0.07,
-    "startHour": 0,
-    "endHour": 24,
-    "isSunThu": false
-  },
-  {
-    "id": "hot_fixed_general",
-    "name": "HOT - מסלול כללי",
-    "desc": "5% הנחה קבועה 24/7 (עולה ל-6% ו-7% בהמשך)",
-    "discount": 0.05,
-    "startHour": 0,
-    "endHour": 24,
-    "isSunThu": false
-  },
-  {
-    "id": "hot_night",
-    "name": "HOT - לילה",
-    "desc": "20% הנחה בימים א'-ה' בין השעות 23:00-07:00",
-    "discount": 0.20,
-    "startHour": 23,
-    "endHour": 7,
-    "isSunThu": true
-  },
-  {
-    "id": "hot_day",
-    "name": "HOT - יום",
-    "desc": "15% הנחה בימים א'-ה' בין השעות 07:00-17:00",
-    "discount": 0.15,
-    "startHour": 7,
-    "endHour": 17,
-    "isSunThu": true
-  },
-  {
-    "id": "hot_volume_med",
-    "name": "HOT - חוסכים בצריכה (בינוני)",
-    "desc": "8% הנחה לבעלי חשבון מעל 200 ₪",
-    "discount": 0.08,
-    "startHour": 0,
-    "endHour": 24,
-    "isSunThu": false
-  },
-  {
-    "id": "hot_volume_high",
-    "name": "HOT - חוסכים בצריכה (גבוה)",
-    "desc": "10% הנחה לבעלי חשבון מעל 300 ₪ (עד 149 קוט\"ש)",
-    "discount": 0.10,
     "startHour": 0,
     "endHour": 24,
     "isSunThu": false
@@ -173,7 +164,7 @@
   {
     "id": "electra_power",
     "name": "אלקטרה - Power",
-    "desc": "6.5% הנחה קבועה בכל שעות היממה",
+    "desc": "6.5% הנחה קבועה בכל שעות היממה (עודכן ב-2025)",
     "discount": 0.065,
     "startHour": 0,
     "endHour": 24,
