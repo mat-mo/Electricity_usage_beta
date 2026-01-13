@@ -41,27 +41,25 @@
                 <button id="btnCheckMeter" class="group relative bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-md border-2 border-transparent hover:border-amber-500 hover:shadow-xl transition-all w-full sm:w-64 text-center">
                     <div class="text-4xl mb-3">❓</div>
                     <div class="font-bold text-lg mb-1 group-hover:text-amber-600 dark:group-hover:text-amber-400">אני לא בטוח/ה</div>
-                    <div class="text-sm text-slate-500">בואו נבדוק אם הותקן מונה חכם בכתובת שלי</div>
+                    <div class="text-sm text-slate-500">בואו נבדוק האם מותקן מונה חכם בכתובת שלי</div>
                 </button>
             </div>
         </div>
 
         <div id="addressCheckSection" class="hidden glass-card bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 p-8 fade-in">
-            <h2 class="text-2xl font-bold mb-6 text-center text-amber-600 dark:text-amber-500">בדיקת זכאות למונה חכם</h2>
+            <h2 class="text-2xl font-bold mb-6 text-center text-amber-600 dark:text-amber-500">בוא נבדוק האם מותקן מונה חכם</h2>
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 <div class="relative">
                     <label class="block text-sm font-medium mb-1">עיר</label>
-                    <input type="text" id="cityInput" list="cityList" class="w-full p-3 rounded-lg border dark:bg-slate-700 dark:border-slate-600 focus:ring-2 focus:ring-indigo-500" placeholder="בחרו עיר מהרשימה...">
+                    <input type="text" id="cityInput" list="cityList" class="w-full p-3 rounded-lg border dark:bg-slate-700 dark:border-slate-600 focus:ring-2 focus:ring-indigo-500" placeholder="התחילו להקליד שם עיר...">
                     <datalist id="cityList"></datalist>
                 </div>
-                
                 <div class="relative">
                     <label class="block text-sm font-medium mb-1">רחוב</label>
-                    <input type="text" id="streetInput" list="streetList" class="w-full p-3 rounded-lg border dark:bg-slate-700 dark:border-slate-600 focus:ring-2 focus:ring-indigo-500" placeholder="בחרו רחוב..." disabled>
+                    <input type="text" id="streetInput" list="streetList" class="w-full p-3 rounded-lg border dark:bg-slate-700 dark:border-slate-600 focus:ring-2 focus:ring-indigo-500" placeholder="שם רחוב..." disabled>
                     <datalist id="streetList"></datalist>
                 </div>
-
                 <div class="relative">
                     <label class="block text-sm font-medium mb-1">מספר בית</label>
                     <input type="text" id="numberInput" class="w-full p-3 rounded-lg border dark:bg-slate-700 dark:border-slate-600 focus:ring-2 focus:ring-indigo-500" placeholder="מספר..." disabled>
@@ -227,9 +225,7 @@
             currentCityData = null;
 
             if (city) {
-                // LAZY LOAD: Fetch specific city file
                 try {
-                    // Safe filename logic must match the Python script
                     const safeFilename = city.replace(/"/g, '').replace(/\//g, '-').replace(/\\/g, '-');
                     const res = await fetch(`data/${safeFilename}.json`);
                     if (res.ok) {
