@@ -13,7 +13,6 @@
     <style>
         body { font-family: 'Heebo', sans-serif; transition: background-color 0.3s ease; }
         .glass-card { backdrop-filter: blur(10px); }
-        /* Smooth fade in for sections */
         .fade-in { animation: fadeIn 0.5s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -30,55 +29,7 @@
 
     <main class="max-w-7xl mx-auto space-y-8">
         
-        <div class="text-center space-y-6 mb-12">
-            <h2 class="text-2xl font-bold mb-4">האם מותקן אצלך מונה חכם?</h2>
-            <div class="flex flex-col sm:flex-row justify-center gap-6">
-                <button id="btnHaveMeter" class="group relative bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-md border-2 border-transparent hover:border-indigo-500 hover:shadow-xl transition-all w-full sm:w-64 text-center">
-                    <div class="text-4xl mb-3">⚡</div>
-                    <div class="font-bold text-lg mb-1 group-hover:text-indigo-600 dark:group-hover:text-indigo-400">יש לי מונה חכם</div>
-                    <div class="text-sm text-slate-500">יש לי את קובץ הנתונים או שאני יודע/ת איך להוריד אותו</div>
-                </button>
-
-                <button id="btnCheckMeter" class="group relative bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-md border-2 border-transparent hover:border-amber-500 hover:shadow-xl transition-all w-full sm:w-64 text-center">
-                    <div class="text-4xl mb-3">❓</div>
-                    <div class="font-bold text-lg mb-1 group-hover:text-amber-600 dark:group-hover:text-amber-400">אני לא בטוח/ה</div>
-                    <div class="text-sm text-slate-500">בואו נבדוק אם הותקן מונה חכם בכתובת שלי</div>
-                </button>
-            </div>
-        </div>
-
-        <div id="addressCheckSection" class="hidden glass-card bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 p-8 fade-in">
-            <h2 class="text-2xl font-bold mb-6 text-center text-amber-600 dark:text-amber-500">בדיקת זכאות למונה חכם</h2>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                <div class="relative">
-                    <label class="block text-sm font-medium mb-1">עיר</label>
-                    <input type="text" id="cityInput" list="cityList" class="w-full p-3 rounded-lg border dark:bg-slate-700 dark:border-slate-600 focus:ring-2 focus:ring-indigo-500" placeholder="התחילו להקליד שם עיר...">
-                    <datalist id="cityList"></datalist>
-                </div>
-                
-                <div class="relative">
-                    <label class="block text-sm font-medium mb-1">רחוב</label>
-                    <input type="text" id="streetInput" list="streetList" class="w-full p-3 rounded-lg border dark:bg-slate-700 dark:border-slate-600 focus:ring-2 focus:ring-indigo-500" placeholder="שם רחוב..." disabled>
-                    <datalist id="streetList"></datalist>
-                </div>
-
-                <div class="relative">
-                    <label class="block text-sm font-medium mb-1">מספר בית</label>
-                    <input type="text" id="numberInput" class="w-full p-3 rounded-lg border dark:bg-slate-700 dark:border-slate-600 focus:ring-2 focus:ring-indigo-500" placeholder="מספר..." disabled>
-                </div>
-            </div>
-
-            <div class="text-center">
-                <button id="checkAddressBtn" class="bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition disabled:opacity-50 disabled:cursor-not-allowed">
-                    בדוק כתובת
-                </button>
-            </div>
-
-            <div id="statusMessage" class="hidden mt-6 p-4 rounded-xl text-center font-bold text-lg animate-fade-in"></div>
-        </div>
-
-        <div id="uploadSection" class="hidden glass-card bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 p-8 fade-in">
+        <div class="glass-card bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 p-8 fade-in">
             <details class="group mb-8" open>
                 <summary class="flex items-center justify-center cursor-pointer list-none text-indigo-600 dark:text-indigo-400 font-medium">
                     <span class="ml-2 group-open:rotate-180 transition-transform">▼</span>
@@ -105,6 +56,13 @@
                     </div>
                     <div id="fileNameDisplay" class="hidden mt-4 font-bold text-sm px-6 py-2 rounded-full inline-block"></div>
                 </div>
+            </div>
+
+            <div class="mt-6 flex items-center justify-center gap-2 text-slate-500 dark:text-slate-400 text-xs bg-slate-50 dark:bg-slate-900/40 py-2 px-4 rounded-lg border border-slate-100 dark:border-slate-800">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-600 dark:text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+                <span><b>הפרטיות שלכם חשובה:</b> ניתוח הנתונים מתבצע באופן מקומי על הדפדפן שלכם בלבד. הקובץ אינו נשלח לאף שרת ואינו נשמר במערכת.</span>
             </div>
             
             <div id="errorMessage" class="hidden mt-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 rounded-xl text-center font-medium">
@@ -156,112 +114,15 @@
         let charts = {};
         let lastProcessedData = null;
         let providerPlans = [];
-        let smartMeterData = null;
 
         // --- INIT ---
         async function init() {
             try {
                 const plansRes = await fetch('plans.json');
                 if (plansRes.ok) providerPlans = await plansRes.json();
-            } catch (err) { console.error(err); }
-
-            try {
-                const metersRes = await fetch('smart_meters.json');
-                if (metersRes.ok) {
-                    smartMeterData = await metersRes.json();
-                    populateCities();
-                }
-            } catch (err) { console.error(err); }
+            } catch (err) { console.error("Error loading plans", err); }
         }
         init();
-
-        // --- CHOICE LOGIC ---
-        const btnHave = document.getElementById('btnHaveMeter');
-        const btnCheck = document.getElementById('btnCheckMeter');
-        const uploadSection = document.getElementById('uploadSection');
-        const checkSection = document.getElementById('addressCheckSection');
-
-        btnHave.addEventListener('click', () => {
-            uploadSection.classList.remove('hidden');
-            checkSection.classList.add('hidden');
-            // Highlight active button
-            btnHave.classList.add('border-indigo-500', 'ring-2', 'ring-indigo-200');
-            btnCheck.classList.remove('border-amber-500', 'ring-2', 'ring-amber-200');
-        });
-
-        btnCheck.addEventListener('click', () => {
-            checkSection.classList.remove('hidden');
-            uploadSection.classList.add('hidden');
-            // Highlight active button
-            btnCheck.classList.add('border-amber-500', 'ring-2', 'ring-amber-200');
-            btnHave.classList.remove('border-indigo-500', 'ring-2', 'ring-indigo-200');
-        });
-
-        // --- ADDRESS CHECKER ---
-        const cityInput = document.getElementById('cityInput');
-        const streetInput = document.getElementById('streetInput');
-        const numberInput = document.getElementById('numberInput');
-        const checkBtn = document.getElementById('checkAddressBtn');
-        const statusMsg = document.getElementById('statusMessage');
-
-        function populateCities() {
-            if (!smartMeterData) return;
-            const cityList = document.getElementById('cityList');
-            Object.keys(smartMeterData).sort().forEach(city => {
-                const opt = document.createElement('option');
-                opt.value = city;
-                cityList.appendChild(opt);
-            });
-        }
-
-        cityInput.addEventListener('change', () => {
-            const city = cityInput.value;
-            streetInput.value = '';
-            streetInput.disabled = true;
-            numberInput.disabled = true;
-            document.getElementById('streetList').innerHTML = '';
-
-            if (smartMeterData && smartMeterData[city]) {
-                streetInput.disabled = false;
-                const streetList = document.getElementById('streetList');
-                Object.keys(smartMeterData[city]).sort().forEach(street => {
-                    const opt = document.createElement('option');
-                    opt.value = street;
-                    streetList.appendChild(opt);
-                });
-            }
-        });
-
-        streetInput.addEventListener('change', () => {
-            if (streetInput.value) numberInput.disabled = false;
-        });
-
-        checkBtn.addEventListener('click', () => {
-            const city = cityInput.value;
-            const street = streetInput.value;
-            const num = numberInput.value.trim();
-            if (!city || !street || !num) return;
-
-            statusMsg.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'bg-amber-100', 'text-amber-800', 'bg-red-100', 'text-red-800');
-            const streetData = smartMeterData?.[city]?.[street];
-
-            if (streetData) {
-                if (streetData.i && streetData.i.includes(num)) {
-                    statusMsg.textContent = "✅ יש לך מונה חכם בכתובת זו! טופס ההעלאה נפתח למטה.";
-                    statusMsg.classList.add('bg-green-100', 'text-green-800');
-                    uploadSection.classList.remove('hidden');
-                    setTimeout(() => uploadSection.scrollIntoView({ behavior: 'smooth' }), 100);
-                    return;
-                }
-                if (streetData.p && streetData.p[num]) {
-                    statusMsg.textContent = `⏳ עדיין לא הותקן מונה חכם. התקנה מתוכננת לרבעון ${streetData.p[num]} בשנת 2026.`;
-                    statusMsg.classList.add('bg-amber-100', 'text-amber-800');
-                    return;
-                }
-            }
-            statusMsg.textContent = "❌ לא נמצא מונה חכם ואין צפי התקנה ב-2026 בכתובת זו.";
-            statusMsg.classList.add('bg-red-100', 'text-red-800');
-        });
 
         // --- THEME & CSV LOGIC ---
         const toggleBtn = document.getElementById('themeToggle');
@@ -290,17 +151,21 @@
         function validateAndProcess(raw, fileName) {
             const headIdx = raw.findIndex(r => r[0] && r[0].includes("תאריך"));
             if (headIdx === -1) return showError("פורמט הקובץ אינו מזוהה.");
+            
             const dataRows = raw.slice(headIdx + 2).filter(r => r[0] && r[1] && r[2]);
             if (dataRows.length === 0) return showError("לא נמצאו נתונים בקובץ.");
+
             const cleanData = dataRows.map(r => ({
                 date: r[0],
                 day: new Date(r[0].split('/').reverse().join('-')).getDay(),
                 hour: parseInt(r[1].split(':')[0]),
                 kwh: parseFloat(r[2])
             }));
+
             document.getElementById('fileNameDisplay').textContent = fileName;
             document.getElementById('fileNameDisplay').classList.remove('hidden');
             document.getElementById('fileNameDisplay').className = "mt-4 font-bold text-sm px-6 py-2 rounded-full inline-block bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300";
+            
             processData(cleanData);
         }
 
@@ -322,6 +187,7 @@
                 let yearSavingsArr = [];
                 let currentAvgMonthlyCost = 0;
                 let averageAnnualSavings = 0;
+
                 let discounts = p.discounts ? p.discounts : [p.discount];
                 let totalSavingsSum = 0;
 
@@ -333,14 +199,20 @@
                         const discount = (timeMatch && dayMatch) ? yearDiscount : 0;
                         yearCost += r.kwh * (BASE_RATE * (1 - discount));
                     });
+
                     let rawYearlySaving = (iecTotal - yearCost) / daysCount * 365;
+
                     if (p.maxYearlyDiscount && rawYearlySaving > p.maxYearlyDiscount) rawYearlySaving = p.maxYearlyDiscount;
                     if (p.maxMonthlyDiscount && rawYearlySaving > (p.maxMonthlyDiscount * 12)) rawYearlySaving = p.maxMonthlyDiscount * 12;
+
                     yearSavingsArr.push(rawYearlySaving);
                     totalSavingsSum += rawYearlySaving;
+
                     if (idx === 0) currentAvgMonthlyCost = (yearCost / daysCount * 365) / 12;
                 });
+
                 averageAnnualSavings = totalSavingsSum / discounts.length;
+
                 return { ...p, yearSavingsArr, averageAnnualSavings, currentAvgMonthlyCost };
             });
 
@@ -348,34 +220,93 @@
 
             document.getElementById('comparisonBody').innerHTML = processedPlans.map((p, i) => {
                 let badges = '';
-                const isCapped = p.yearSavingsArr.some(s => (p.maxYearlyDiscount && s >= p.maxYearlyDiscount) || (p.maxMonthlyDiscount && s >= (p.maxMonthlyDiscount * 12)));
+                const isCapped = p.yearSavingsArr.some(s => 
+                    (p.maxYearlyDiscount && s >= p.maxYearlyDiscount) || 
+                    (p.maxMonthlyDiscount && s >= (p.maxMonthlyDiscount * 12))
+                );
+                
                 if (isCapped) badges += `<span title="החיסכון מוגבל ע''י הספק" class="cursor-help text-[10px] bg-red-100 text-red-700 px-2 py-0.5 rounded-full mr-1">מוגבל תקרה</span>`;
                 if (p.discounts) badges += `<span class="text-[10px] bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full mr-1">הנחה צומחת</span>`;
 
                 let savingsDisplay = '';
                 if (p.discounts) {
-                    savingsDisplay = `<div class="text-lg font-bold text-indigo-600 dark:text-indigo-400">₪${p.averageAnnualSavings.toFixed(0)} <span class="text-xs text-slate-500 font-normal">(ממוצע)</span></div><div class="text-[10px] text-slate-500 mt-1 space-y-0.5"><div>שנה א': ₪${p.yearSavingsArr[0].toFixed(0)}</div><div>שנה ב': ₪${p.yearSavingsArr[1].toFixed(0)}</div><div>שנה ג': ₪${p.yearSavingsArr[2].toFixed(0)}</div></div>`;
+                    savingsDisplay = `
+                        <div class="text-lg font-bold text-indigo-600 dark:text-indigo-400">₪${p.averageAnnualSavings.toFixed(0)} <span class="text-xs text-slate-500 font-normal">(ממוצע)</span></div>
+                        <div class="text-[10px] text-slate-500 mt-1 space-y-0.5">
+                            <div>שנה א': ₪${p.yearSavingsArr[0].toFixed(0)}</div>
+                            <div>שנה ב': ₪${p.yearSavingsArr[1].toFixed(0)}</div>
+                            <div>שנה ג': ₪${p.yearSavingsArr[2].toFixed(0)}</div>
+                        </div>
+                    `;
                 } else {
-                    savingsDisplay = `<div class="text-lg font-bold ${p.averageAnnualSavings > 0 ? 'text-green-600 dark:text-green-400' : 'text-slate-400'}">${p.averageAnnualSavings > 0 ? '₪' + p.averageAnnualSavings.toFixed(0) : '-'}</div>`;
+                    savingsDisplay = `
+                        <div class="text-lg font-bold ${p.averageAnnualSavings > 0 ? 'text-green-600 dark:text-green-400' : 'text-slate-400'}">
+                            ${p.averageAnnualSavings > 0 ? '₪' + p.averageAnnualSavings.toFixed(0) : '-'}
+                        </div>
+                    `;
                 }
 
-                return `<tr class="border-b dark:border-slate-700 transition ${i === 0 ? 'bg-green-50/50 dark:bg-green-900/20' : ''}"><td class="p-4"><div class="font-bold text-slate-800 dark:text-slate-200">${p.name}</div><div class="mt-1">${badges}</div></td><td class="p-4 text-xs text-slate-500 dark:text-slate-400">${p.desc}</td><td class="p-4 font-bold text-center">₪${p.currentAvgMonthlyCost.toFixed(0)}</td><td class="p-4">${savingsDisplay}</td></tr>`;
+                return `
+                <tr class="border-b dark:border-slate-700 transition ${i === 0 ? 'bg-green-50/50 dark:bg-green-900/20' : ''}">
+                    <td class="p-4">
+                        <div class="font-bold text-slate-800 dark:text-slate-200">${p.name}</div>
+                        <div class="mt-1">${badges}</div>
+                    </td>
+                    <td class="p-4 text-xs text-slate-500 dark:text-slate-400">${p.desc}</td>
+                    <td class="p-4 font-bold text-center">₪${p.currentAvgMonthlyCost.toFixed(0)}</td>
+                    <td class="p-4">
+                        ${savingsDisplay}
+                    </td>
+                </tr>`;
             }).join('');
+
             document.getElementById('dashboard').classList.remove('hidden');
             renderCharts(data);
         }
 
         function renderCharts(data) {
             const daily = {}, hSum = {}, hCnt = {};
-            data.forEach(r => { daily[r.date] = (daily[r.date] || 0) + r.kwh; hSum[r.hour] = (hSum[r.hour] || 0) + r.kwh; hCnt[r.hour] = (hCnt[r.hour] || 0) + 1; });
+            data.forEach(r => {
+                daily[r.date] = (daily[r.date] || 0) + r.kwh;
+                hSum[r.hour] = (hSum[r.hour] || 0) + r.kwh;
+                hCnt[r.hour] = (hCnt[r.hour] || 0) + 1;
+            });
+
             const isDark = document.documentElement.classList.contains('dark');
             const textColor = isDark ? '#cbd5e1' : '#475569';
             const gridColor = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
+
             if (charts.radar) charts.radar.destroy();
-            charts.radar = new Chart(document.getElementById('hourlyRadarChart'), { type: 'radar', data: { labels: Array.from({length: 24}, (_, i) => i.toString().padStart(2, '0') + ':00'), datasets: [{ data: Array.from({length: 24}, (_, i) => hSum[i]/hCnt[i]), backgroundColor: isDark ? 'rgba(99, 102, 241, 0.3)' : 'rgba(99, 102, 241, 0.1)', borderColor: '#6366f1', pointBackgroundColor: Array.from({length: 24}, (_, i) => (i >= 23 || i < 7) ? (isDark ? '#38bdf8' : '#312e81') : '#f59e0b') }] }, options: { responsive: true, maintainAspectRatio: false, scales: { r: { beginAtZero: true, ticks: { display: false }, pointLabels: { color: textColor, font: { family: 'Heebo', size: 12 } }, grid: { color: gridColor }, angleLines: { color: gridColor } } }, plugins: { legend: { display: false } } } });
+            charts.radar = new Chart(document.getElementById('hourlyRadarChart'), {
+                type: 'radar',
+                data: {
+                    labels: Array.from({length: 24}, (_, i) => i.toString().padStart(2, '0') + ':00'),
+                    datasets: [{
+                        data: Array.from({length: 24}, (_, i) => hSum[i]/hCnt[i]),
+                        backgroundColor: isDark ? 'rgba(99, 102, 241, 0.3)' : 'rgba(99, 102, 241, 0.1)',
+                        borderColor: '#6366f1',
+                        pointBackgroundColor: Array.from({length: 24}, (_, i) => (i >= 23 || i < 7) ? (isDark ? '#38bdf8' : '#312e81') : '#f59e0b')
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    scales: { r: { beginAtZero: true, ticks: { display: false }, pointLabels: { color: textColor, font: { family: 'Heebo', size: 12 } }, grid: { color: gridColor }, angleLines: { color: gridColor } } },
+                    plugins: { legend: { display: false } }
+                }
+            });
+
             if (charts.daily) charts.daily.destroy();
-            charts.daily = new Chart(document.getElementById('dailyChart'), { type: 'bar', data: { labels: Object.keys(daily), datasets: [{ data: Object.values(daily), backgroundColor: '#6366f1' }] }, options: { responsive: true, maintainAspectRatio: false, scales: { x: { ticks: { color: textColor }, grid: { display: false } }, y: { position: 'left', ticks: { color: textColor }, grid: { color: gridColor } } }, plugins: { legend: { display: false } } } });
+            charts.daily = new Chart(document.getElementById('dailyChart'), {
+                type: 'bar',
+                data: { labels: Object.keys(daily), datasets: [{ data: Object.values(daily), backgroundColor: '#6366f1' }] },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    scales: { x: { ticks: { color: textColor }, grid: { display: false } }, y: { position: 'left', ticks: { color: textColor }, grid: { color: gridColor } } },
+                    plugins: { legend: { display: false } }
+                }
+            });
         }
+
         function resetUI() { document.getElementById('errorMessage').classList.add('hidden'); document.getElementById('dropZone').className = "border-2 border-dashed border-slate-200 dark:border-slate-600 rounded-xl p-12 text-center transition-all group-hover:border-indigo-400 group-hover:bg-indigo-50/30 dark:group-hover:bg-indigo-900/10 cursor-pointer"; }
         function showError(msg) { const errDiv = document.getElementById('errorMessage'); document.getElementById('errorText').textContent = msg; errDiv.classList.remove('hidden'); document.getElementById('dropZone').classList.add('border-red-400', 'bg-red-50', 'dark:bg-red-900/10'); }
     </script>
