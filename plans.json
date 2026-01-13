@@ -1,9 +1,200 @@
 [
-  { "id": "iec", "name": "חברת החשמל", "desc": "ללא הנחה", "discount": 0, "startHour": 0, "endHour": 24, "isSunThu": false },
-  { "id": "electra_super", "name": "אלקטרה - לילה", "desc": "21% הנחה בלילה (23-07, א-ה)", "discount": 0.21, "startHour": 23, "endHour": 7, "isSunThu": true },
-  { "id": "bezeq_night", "name": "בזק / סלקום / HOT - לילה", "desc": "20% הנחה בלילה (23-07, א-ה)", "discount": 0.20, "startHour": 23, "endHour": 7, "isSunThu": true },
-  { "id": "cellcom_fam", "name": "סלקום - משפחתי", "desc": "18% הנחה אחה\"צ (14-20, א-ה)", "discount": 0.18, "startHour": 14, "endHour": 20, "isSunThu": true },
-  { "id": "electra_day", "name": "אלקטרה - יום", "desc": "16% הנחה ביום (07-17, א-ה)", "discount": 0.16, "startHour": 7, "endHour": 17, "isSunThu": true },
-  { "id": "amisragas_flat", "name": "אמישראגז - קבוע", "desc": "7% הנחה קבועה 24/7", "discount": 0.07, "startHour": 0, "endHour": 24, "isSunThu": false },
-  { "id": "electra_flat", "name": "אלקטרה - קבוע", "desc": "6.5% הנחה קבועה 24/7", "discount": 0.065, "startHour": 0, "endHour": 24, "isSunThu": false }
+  {
+    "id": "bezeq_fixed",
+    "name": "בזק חשמל - מסלול קבוע",
+    "desc": "6% הנחה קבועה בכל שעות היממה לכל סוגי המונים",
+    "discount": 0.06,
+    "startHour": 0,
+    "endHour": 24,
+    "isSunThu": false
+  },
+  {
+    "id": "bezeq_day",
+    "name": "בזק חשמל - יום",
+    "desc": "15% הנחה בימים א'-ה' בין השעות 07:00-17:00",
+    "discount": 0.15,
+    "startHour": 7,
+    "endHour": 17,
+    "isSunThu": true
+  },
+  {
+    "id": "bezeq_night",
+    "name": "בזק חשמל - לילה",
+    "desc": "20% הנחה בימים א'-ה' בין השעות 23:00-07:00",
+    "discount": 0.20,
+    "startHour": 23,
+    "endHour": 7,
+    "isSunThu": true
+  },
+  {
+    "id": "pazgaz_fixed",
+    "name": "פזגז חשמל - הנחה קבועה",
+    "desc": "6% הנחה קבועה בכל שעות היממה",
+    "discount": 0.06,
+    "startHour": 0,
+    "endHour": 24,
+    "isSunThu": false
+  },
+  {
+    "id": "pazgaz_yellow",
+    "name": "פזגז חשמל - Yellow",
+    "desc": "10% צבירה לאפליקציית Yellow בכל שעות היממה",
+    "discount": 0.10,
+    "startHour": 0,
+    "endHour": 24,
+    "isSunThu": false
+  },
+  {
+    "id": "amisragas_fixed",
+    "name": "אמישראגז חשמל",
+    "desc": "7% הנחה קבועה בכל שעות היממה ללקוחות החברה",
+    "discount": 0.07,
+    "startHour": 0,
+    "endHour": 24,
+    "isSunThu": false
+  },
+  {
+    "id": "hot_fixed_customer",
+    "name": "HOT - לקוחות הוט",
+    "desc": "7% הנחה קבועה 24/7 ללקוחות הטריפל/מובייל",
+    "discount": 0.07,
+    "startHour": 0,
+    "endHour": 24,
+    "isSunThu": false
+  },
+  {
+    "id": "hot_fixed_general",
+    "name": "HOT - מסלול כללי",
+    "desc": "5% הנחה קבועה 24/7 (עולה ל-6% ו-7% בהמשך)",
+    "discount": 0.05,
+    "startHour": 0,
+    "endHour": 24,
+    "isSunThu": false
+  },
+  {
+    "id": "hot_night",
+    "name": "HOT - לילה",
+    "desc": "20% הנחה בימים א'-ה' בין השעות 23:00-07:00",
+    "discount": 0.20,
+    "startHour": 23,
+    "endHour": 7,
+    "isSunThu": true
+  },
+  {
+    "id": "hot_day",
+    "name": "HOT - יום",
+    "desc": "15% הנחה בימים א'-ה' בין השעות 07:00-17:00",
+    "discount": 0.15,
+    "startHour": 7,
+    "endHour": 17,
+    "isSunThu": true
+  },
+  {
+    "id": "hot_volume_med",
+    "name": "HOT - חוסכים בצריכה (בינוני)",
+    "desc": "8% הנחה לבעלי חשבון מעל 200 ₪",
+    "discount": 0.08,
+    "startHour": 0,
+    "endHour": 24,
+    "isSunThu": false
+  },
+  {
+    "id": "hot_volume_high",
+    "name": "HOT - חוסכים בצריכה (גבוה)",
+    "desc": "10% הנחה לבעלי חשבון מעל 300 ₪ (עד 149 קוט\"ש)",
+    "discount": 0.10,
+    "startHour": 0,
+    "endHour": 24,
+    "isSunThu": false
+  },
+  {
+    "id": "cellcom_fixed",
+    "name": "סלקום - קבוע",
+    "desc": "5% הנחה קבועה בכל שעות היממה",
+    "discount": 0.05,
+    "startHour": 0,
+    "endHour": 24,
+    "isSunThu": false
+  },
+  {
+    "id": "cellcom_work",
+    "name": "סלקום - עובדים מהבית",
+    "desc": "15% הנחה בימים א'-ה' בין השעות 07:00-17:00",
+    "discount": 0.15,
+    "startHour": 7,
+    "endHour": 17,
+    "isSunThu": true
+  },
+  {
+    "id": "cellcom_night",
+    "name": "סלקום - לילה",
+    "desc": "20% הנחה בימים א'-ה' בין השעות 23:00-07:00",
+    "discount": 0.20,
+    "startHour": 23,
+    "endHour": 7,
+    "isSunThu": true
+  },
+  {
+    "id": "cellcom_family",
+    "name": "סלקום - משפחה",
+    "desc": "18% הנחה בימים א'-ה' בין השעות 14:00-20:00",
+    "discount": 0.18,
+    "startHour": 14,
+    "endHour": 20,
+    "isSunThu": true
+  },
+  {
+    "id": "partner_fixed",
+    "name": "פרטנר - קבוע",
+    "desc": "5% הנחה קבועה (צומחת ל-6% ו-7% עם הוותק)",
+    "discount": 0.05,
+    "startHour": 0,
+    "endHour": 24,
+    "isSunThu": false
+  },
+  {
+    "id": "partner_work",
+    "name": "פרטנר - עובדים מהבית",
+    "desc": "15% הנחה בימים א'-ה' בין השעות 07:00-17:00",
+    "discount": 0.15,
+    "startHour": 7,
+    "endHour": 17,
+    "isSunThu": true
+  },
+  {
+    "id": "partner_night",
+    "name": "פרטנר - חיות לילה",
+    "desc": "20% הנחה בימים א'-ה' בין השעות 23:00-07:00",
+    "discount": 0.20,
+    "startHour": 23,
+    "endHour": 7,
+    "isSunThu": true
+  },
+  {
+    "id": "electra_power",
+    "name": "אלקטרה - Power",
+    "desc": "6.5% הנחה קבועה בכל שעות היממה",
+    "discount": 0.065,
+    "startHour": 0,
+    "endHour": 24,
+    "isSunThu": false
+  },
+  {
+    "id": "electra_day",
+    "name": "אלקטרה - יום",
+    "desc": "16% הנחה בימים א'-ה' בין השעות 07:00-17:00",
+    "discount": 0.16,
+    "startHour": 7,
+    "endHour": 17,
+    "isSunThu": true
+  },
+  {
+    "id": "electra_night",
+    "name": "אלקטרה - לילה פלוס",
+    "desc": "21% הנחה בימים א'-ה' בין השעות 23:00-07:00",
+    "discount": 0.21,
+    "startHour": 23,
+    "endHour": 7,
+    "isSunThu": true
+  }
 ]
