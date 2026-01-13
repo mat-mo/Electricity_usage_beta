@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>מחשבון השוואת מחירי חשמל 2026</title>
     <link rel="icon" type="image/png" href="favicon.png">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -32,14 +33,15 @@
             <details class="group mb-8" open>
                 <summary class="flex items-center justify-center cursor-pointer list-none text-indigo-600 dark:text-indigo-400 font-medium">
                     <span class="ml-2 group-open:rotate-180 transition-transform">▼</span>
-                    איך מבצעים השוואת מחירים?
+                    איך משיגים את קובץ נתוני הצריכה?
                 </summary>
                 <div class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-6 text-sm mt-4 text-right border border-slate-100 dark:border-slate-700">
                     <ol class="space-y-3 list-decimal pr-4 text-slate-700 dark:text-slate-300">
-                        <li>התחברו לאתר חברת החשמל: <a href="https://www.iec.co.il/consumption-info-menu/remote-reading-info" target="_blank" class="text-indigo-600 dark:text-indigo-400 font-bold underline">לחצו כאן</a></li>
+                        <li>התחברו לאתר חברת החשמל: <a href="https://www.iec.co.il/consumption-info-menu/remote-reading-info" target="_blank" class="text-indigo-600 dark:text-indigo-400 font-bold underline">לחצו כאן למעבר</a></li>
                         <li>לחצו על כפתור <b>"מצב צריכה עדכני"</b></li>
                         <li>לחצו על <b>"קבלת קובץ אקסל עם נתוני צריכה מהשנה האחרונה למייל"</b></li>
-                        <li>הורידו את ה-CSV מהמייל והעלו אותו כאן ⬇️</li>
+                        <li>לחצו על כפתור <b>"תשלחו לי"</b></li>
+                        <li>הורידו את קובץ ה-CSV מהמייל והעלו אותו כאן ⬇️</li>
                     </ol>
                 </div>
             </details>
@@ -47,7 +49,7 @@
             <div class="relative group">
                 <input type="file" id="csvFileInput" accept=".csv" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
                 <div id="dropZone" class="border-2 border-dashed border-slate-200 dark:border-slate-600 rounded-xl p-12 text-center transition-all group-hover:border-indigo-400 group-hover:bg-indigo-50/30 dark:group-hover:bg-indigo-900/10">
-                    <p id="dropZoneText" class="text-slate-600 dark:text-slate-400 font-semibold text-lg">גררו לכאן את קובץ ה-CSV של חברת החשמל</p>
+                    <p id="dropZoneText" class="text-slate-600 dark:text-slate-400 font-semibold text-lg">גררו לכאן את קובץ ה-CSV של חברת החשמל לניתוח עלויות</p>
                     <div id="fileNameDisplay" class="hidden mt-4 font-bold text-sm px-6 py-2 rounded-full inline-block"></div>
                 </div>
             </div>
@@ -74,7 +76,7 @@
                                 <th class="p-4 font-bold">ספק ומסלול</th>
                                 <th class="p-4 font-bold">הטבה</th>
                                 <th class="p-4 font-bold">עלות לתקופה</th>
-                                <th class="p-4 font-bold">חיסכון שנתי משוער</th>
+                                <th class="p-4 font-bold text-indigo-600 dark:text-indigo-400 text-lg">חיסכון שנתי משוער</th>
                             </tr>
                         </thead>
                         <tbody id="comparisonBody"></tbody>
@@ -84,11 +86,11 @@
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-md border border-slate-100 dark:border-slate-700">
-                    <h3 class="font-bold mb-6 text-center text-lg">פרופיל צריכה ממוצע (קוט"ש)</h3>
+                    <h3 class="font-bold mb-6 text-center text-lg">פרופיל צריכה ממוצע (kWh)</h3>
                     <div class="relative h-[450px]"><canvas id="hourlyRadarChart"></canvas></div>
                     <div class="flex justify-center gap-6 mt-4 text-xs font-bold">
                         <div class="flex items-center gap-2">
-                            <span class="w-4 h-4 rounded-full bg-indigo-900 dark:bg-indigo-400"></span> <span>לילה 23:00-07:00</span>
+                            <span class="w-4 h-4 rounded-full bg-indigo-900 dark:bg-sky-500"></span> <span>לילה 23:00-07:00</span>
                         </div>
                         <div class="flex items-center gap-2">
                             <span class="w-4 h-4 rounded-full bg-amber-500"></span> <span>יום 07:00-23:00</span>
@@ -96,7 +98,7 @@
                     </div>
                 </div>
                 <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-md border border-slate-100 dark:border-slate-700">
-                    <h3 class="font-bold mb-6 text-center text-lg">צריכה יומית לאורך התקופה</h3>
+                    <h3 class="font-bold mb-6 text-center text-lg">צריכה יומית לאורך התקופה (קוט"ש)</h3>
                     <div class="h-[450px]"><canvas id="dailyChart"></canvas></div>
                 </div>
             </div>
@@ -115,7 +117,7 @@
                 if (!response.ok) throw new Error();
                 providerPlans = await response.json();
             } catch (err) {
-                showError("שגיאה בטעינת קובץ המסלולים (plans.json)");
+                showError("שגיאה בטעינת קובץ המסלולים (plans.json). וודא שאתה מריץ דרך שרת או GitHub Pages.");
             }
         }
         loadPlans();
@@ -223,7 +225,7 @@
                         data: Array.from({length: 24}, (_, i) => hSum[i]/hCnt[i]),
                         backgroundColor: isDark ? 'rgba(99, 102, 241, 0.3)' : 'rgba(99, 102, 241, 0.1)',
                         borderColor: '#6366f1',
-                        pointBackgroundColor: Array.from({length: 24}, (_, i) => (i >= 23 || i < 7) ? (isDark ? '#818cf8' : '#312e81') : '#f59e0b')
+                        pointBackgroundColor: Array.from({length: 24}, (_, i) => (i >= 23 || i < 7) ? (isDark ? '#38bdf8' : '#312e81') : '#f59e0b')
                     }]
                 },
                 options: {
