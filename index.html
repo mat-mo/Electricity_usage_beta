@@ -29,7 +29,55 @@
 
     <main class="max-w-7xl mx-auto space-y-8">
         
-        <div class="glass-card bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 p-8 fade-in">
+        <div class="text-center space-y-6 mb-12">
+            <h2 class="text-2xl font-bold mb-4">האם מותקן אצלך מונה חכם?</h2>
+            <div class="flex flex-col sm:flex-row justify-center gap-6">
+                <button id="btnHaveMeter" class="group relative bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-md border-2 border-transparent hover:border-indigo-500 hover:shadow-xl transition-all w-full sm:w-64 text-center">
+                    <div class="text-4xl mb-3">⚡</div>
+                    <div class="font-bold text-lg mb-1 group-hover:text-indigo-600 dark:group-hover:text-indigo-400">יש לי מונה חכם</div>
+                    <div class="text-sm text-slate-500">יש לי את קובץ הנתונים או שאני יודע/ת איך להוריד אותו</div>
+                </button>
+
+                <button id="btnCheckMeter" class="group relative bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-md border-2 border-transparent hover:border-amber-500 hover:shadow-xl transition-all w-full sm:w-64 text-center">
+                    <div class="text-4xl mb-3">❓</div>
+                    <div class="font-bold text-lg mb-1 group-hover:text-amber-600 dark:group-hover:text-amber-400">אני לא בטוח/ה</div>
+                    <div class="text-sm text-slate-500">בואו נבדוק אם הותקן מונה חכם בכתובת שלי</div>
+                </button>
+            </div>
+        </div>
+
+        <div id="addressCheckSection" class="hidden glass-card bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 p-8 fade-in">
+            <h2 class="text-2xl font-bold mb-6 text-center text-amber-600 dark:text-amber-500">בדיקת זכאות למונה חכם</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div class="relative">
+                    <label class="block text-sm font-medium mb-1">עיר</label>
+                    <input type="text" id="cityInput" list="cityList" class="w-full p-3 rounded-lg border dark:bg-slate-700 dark:border-slate-600 focus:ring-2 focus:ring-indigo-500" placeholder="בחרו עיר מהרשימה...">
+                    <datalist id="cityList"></datalist>
+                </div>
+                
+                <div class="relative">
+                    <label class="block text-sm font-medium mb-1">רחוב</label>
+                    <input type="text" id="streetInput" list="streetList" class="w-full p-3 rounded-lg border dark:bg-slate-700 dark:border-slate-600 focus:ring-2 focus:ring-indigo-500" placeholder="בחרו רחוב..." disabled>
+                    <datalist id="streetList"></datalist>
+                </div>
+
+                <div class="relative">
+                    <label class="block text-sm font-medium mb-1">מספר בית</label>
+                    <input type="text" id="numberInput" class="w-full p-3 rounded-lg border dark:bg-slate-700 dark:border-slate-600 focus:ring-2 focus:ring-indigo-500" placeholder="מספר..." disabled>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <button id="checkAddressBtn" class="bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition disabled:opacity-50 disabled:cursor-not-allowed">
+                    בדוק כתובת
+                </button>
+            </div>
+
+            <div id="statusMessage" class="hidden mt-6 p-4 rounded-xl text-center font-bold text-lg animate-fade-in"></div>
+        </div>
+
+        <div id="uploadSection" class="hidden glass-card bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 p-8 fade-in">
             <details class="group mb-8" open>
                 <summary class="flex items-center justify-center cursor-pointer list-none text-indigo-600 dark:text-indigo-400 font-medium">
                     <span class="ml-2 group-open:rotate-180 transition-transform">▼</span>
@@ -114,6 +162,7 @@
         let charts = {};
         let lastProcessedData = null;
         let providerPlans = [];
+        let currentCityData = null;
 
         // --- INIT ---
         async function init() {
@@ -121,8 +170,115 @@
                 const plansRes = await fetch('plans.json');
                 if (plansRes.ok) providerPlans = await plansRes.json();
             } catch (err) { console.error("Error loading plans", err); }
+
+            // Load Cities Index only
+            try {
+                const citiesRes = await fetch('data/cities.json');
+                if (citiesRes.ok) {
+                    const cities = await citiesRes.json();
+                    populateCities(cities);
+                }
+            } catch (err) { console.error("Error loading cities index. Ensure 'data/cities.json' exists.", err); }
         }
         init();
+
+        // --- CHOICE LOGIC ---
+        const btnHave = document.getElementById('btnHaveMeter');
+        const btnCheck = document.getElementById('btnCheckMeter');
+        const uploadSection = document.getElementById('uploadSection');
+        const checkSection = document.getElementById('addressCheckSection');
+
+        btnHave.addEventListener('click', () => {
+            uploadSection.classList.remove('hidden');
+            checkSection.classList.add('hidden');
+            btnHave.classList.add('border-indigo-500', 'ring-2', 'ring-indigo-200');
+            btnCheck.classList.remove('border-amber-500', 'ring-2', 'ring-amber-200');
+        });
+
+        btnCheck.addEventListener('click', () => {
+            checkSection.classList.remove('hidden');
+            uploadSection.classList.add('hidden');
+            btnCheck.classList.add('border-amber-500', 'ring-2', 'ring-amber-200');
+            btnHave.classList.remove('border-indigo-500', 'ring-2', 'ring-indigo-200');
+        });
+
+        // --- SMART ADDRESS CHECKER (Lazy Load) ---
+        const cityInput = document.getElementById('cityInput');
+        const streetInput = document.getElementById('streetInput');
+        const numberInput = document.getElementById('numberInput');
+        const checkBtn = document.getElementById('checkAddressBtn');
+        const statusMsg = document.getElementById('statusMessage');
+
+        function populateCities(cities) {
+            const cityList = document.getElementById('cityList');
+            cities.forEach(city => {
+                const opt = document.createElement('option');
+                opt.value = city;
+                cityList.appendChild(opt);
+            });
+        }
+
+        cityInput.addEventListener('change', async () => {
+            const city = cityInput.value;
+            streetInput.value = '';
+            streetInput.disabled = true;
+            numberInput.disabled = true;
+            document.getElementById('streetList').innerHTML = '';
+            currentCityData = null;
+
+            if (city) {
+                // LAZY LOAD: Fetch specific city file
+                try {
+                    // Safe filename logic must match the Python script
+                    const safeFilename = city.replace(/"/g, '').replace(/\//g, '-').replace(/\\/g, '-');
+                    const res = await fetch(`data/${safeFilename}.json`);
+                    if (res.ok) {
+                        currentCityData = await res.json();
+                        streetInput.disabled = false;
+                        const streetList = document.getElementById('streetList');
+                        Object.keys(currentCityData).sort().forEach(street => {
+                            const opt = document.createElement('option');
+                            opt.value = street;
+                            streetList.appendChild(opt);
+                        });
+                    }
+                } catch (err) { console.error("Error loading city data", err); }
+            }
+        });
+
+        streetInput.addEventListener('change', () => {
+            if (streetInput.value) numberInput.disabled = false;
+        });
+
+        checkBtn.addEventListener('click', () => {
+            const city = cityInput.value;
+            const street = streetInput.value;
+            const num = numberInput.value.trim();
+
+            if (!city || !street || !num || !currentCityData) return;
+
+            statusMsg.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'bg-amber-100', 'text-amber-800', 'bg-red-100', 'text-red-800');
+            uploadSection.classList.add('hidden');
+
+            const streetData = currentCityData[street];
+
+            if (streetData) {
+                if (streetData.i && streetData.i.includes(num)) {
+                    statusMsg.textContent = "✅ יש לך מונה חכם בכתובת זו! טופס ההעלאה נפתח למטה.";
+                    statusMsg.classList.add('bg-green-100', 'text-green-800');
+                    uploadSection.classList.remove('hidden');
+                    setTimeout(() => uploadSection.scrollIntoView({ behavior: 'smooth' }), 100);
+                    return;
+                }
+                if (streetData.p && streetData.p[num]) {
+                    statusMsg.textContent = `⏳ עדיין לא הותקן מונה חכם. התקנה מתוכננת לרבעון ${streetData.p[num]} בשנת 2026.`;
+                    statusMsg.classList.add('bg-amber-100', 'text-amber-800');
+                    return;
+                }
+            }
+            statusMsg.textContent = "❌ לא נמצא מונה חכם ואין צפי התקנה ב-2026 בכתובת זו.";
+            statusMsg.classList.add('bg-red-100', 'text-red-800');
+        });
 
         // --- THEME & CSV LOGIC ---
         const toggleBtn = document.getElementById('themeToggle');
