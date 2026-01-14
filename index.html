@@ -146,6 +146,7 @@
                         <tr class="text-slate-500 dark:text-slate-400 text-sm border-b dark:border-slate-700">
                             <th class="p-4 font-bold">ספק ומסלול</th>
                             <th class="p-4 font-bold w-1/3">פרטי ההנחה</th>
+                            <th class="p-4 font-bold text-center">עלות חודשית משוערת</th>
                             <th class="p-4 font-bold text-indigo-600 dark:text-indigo-400 text-lg">חיסכון שנתי משוער</th>
                         </tr>
                     </thead>
@@ -296,13 +297,17 @@
 
             results.sort((a, b) => b.annualSaving - a.annualSaving);
 
-            tbody.innerHTML = results.map(p => `
+            tbody.innerHTML = results.map(p => {
+                const monthlyCost = monthlyBill * (1 - p.avgDiscount);
+                return `
                 <tr class="border-b dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition">
                     <td class="p-4 font-bold text-slate-800 dark:text-slate-200">${p.name}</td>
                     <td class="p-4 text-sm text-slate-600 dark:text-slate-400">${p.desc}</td>
+                    <td class="p-4 font-bold text-center">₪${monthlyCost.toFixed(0)}</td>
                     <td class="p-4 font-bold text-lg text-blue-600 dark:text-blue-400">₪${p.annualSaving.toFixed(0)}</td>
                 </tr>
-            `).join('');
+            `;
+            }).join('');
         }
 
         // --- SMART ADDRESS CHECKER ---
