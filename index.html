@@ -176,10 +176,13 @@
                     <div class="relative h-[450px]"><canvas id="hourlyRadarChart"></canvas></div>
                     <div class="flex justify-center gap-6 mt-4 text-xs font-bold">
                         <div class="flex items-center gap-2">
-                            <span class="w-4 h-4 rounded-full bg-indigo-900 dark:bg-sky-500"></span> <span>לילה 23:00-07:00</span>
+                            <span class="w-4 h-4 rounded-full bg-green-500"></span> <span>לילה 23:00-07:00</span>
                         </div>
                         <div class="flex items-center gap-2">
-                            <span class="w-4 h-4 rounded-full bg-amber-500"></span> <span>יום 07:00-23:00</span>
+                            <span class="w-4 h-4 rounded-full bg-orange-500"></span> <span>יום 08:00-17:00</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-4 h-4 rounded-full bg-red-500"></span> <span>שיא 17:00-23:00</span>
                         </div>
                     </div>
                 </div>
@@ -483,7 +486,11 @@
             const textColor = isDark ? '#cbd5e1' : '#475569';
             const gridColor = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
             if (charts.radar) charts.radar.destroy();
-            charts.radar = new Chart(document.getElementById('hourlyRadarChart'), { type: 'radar', data: { labels: Array.from({length: 24}, (_, i) => i.toString().padStart(2, '0') + ':00'), datasets: [{ data: Array.from({length: 24}, (_, i) => hSum[i]/hCnt[i]), backgroundColor: isDark ? 'rgba(99, 102, 241, 0.3)' : 'rgba(99, 102, 241, 0.1)', borderColor: '#6366f1', pointBackgroundColor: Array.from({length: 24}, (_, i) => (i >= 23 || i < 7) ? (isDark ? '#38bdf8' : '#312e81') : '#f59e0b') }] }, options: { responsive: true, maintainAspectRatio: false, scales: { r: { beginAtZero: true, ticks: { display: false }, pointLabels: { color: textColor, font: { family: 'Heebo', size: 12 } }, grid: { color: gridColor }, angleLines: { color: gridColor } } }, plugins: { legend: { display: false } } } });
+            charts.radar = new Chart(document.getElementById('hourlyRadarChart'), { type: 'radar', data: { labels: Array.from({length: 24}, (_, i) => i.toString().padStart(2, '0') + ':00'), datasets: [{ data: Array.from({length: 24}, (_, i) => hSum[i]/hCnt[i]), backgroundColor: isDark ? 'rgba(99, 102, 241, 0.3)' : 'rgba(99, 102, 241, 0.1)', borderColor: '#6366f1', pointBackgroundColor: Array.from({length: 24}, (_, i) => {
+                if (i >= 23 || i < 7) return '#22c55e'; // לילה 23:00-07:00 - green
+                if (i >= 8 && i < 17) return '#f97316'; // יום 08:00-17:00 - orange
+                return '#ef4444'; // שיא 17:00-23:00 - red
+            }) }] }, options: { responsive: true, maintainAspectRatio: false, scales: { r: { beginAtZero: true, ticks: { display: false }, pointLabels: { color: textColor, font: { family: 'Heebo', size: 12 } }, grid: { color: gridColor }, angleLines: { color: gridColor } } }, plugins: { legend: { display: false } } } });
             if (charts.daily) charts.daily.destroy();
             charts.daily = new Chart(document.getElementById('dailyChart'), { type: 'bar', data: { labels: Object.keys(daily), datasets: [{ data: Object.values(daily), backgroundColor: '#6366f1' }] }, options: { responsive: true, maintainAspectRatio: false, scales: { x: { ticks: { color: textColor }, grid: { display: false } }, y: { position: 'left', ticks: { color: textColor }, grid: { color: gridColor } } }, plugins: { legend: { display: false } } } });
         }
