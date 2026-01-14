@@ -138,6 +138,8 @@
                 <input type="number" id="monthlyBillInput" value="400" class="w-32 p-2 text-center text-lg font-bold rounded-lg border border-slate-300 dark:bg-slate-700 dark:border-slate-600 focus:ring-2 focus:ring-blue-500">
             </div>
 
+            <div id="iecReferenceBoxBasic" class="mb-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border-2 border-blue-200 dark:border-blue-700 text-sm text-slate-700 dark:text-slate-300 shadow-sm"></div>
+
             <div class="overflow-x-auto">
                 <table class="w-full text-right border-collapse">
                     <thead>
@@ -266,6 +268,10 @@
             const monthlyBill = parseFloat(monthlyBillInput.value) || 0;
             const annualBill = monthlyBill * 12;
             const tbody = document.getElementById('fixedPlansBody');
+            
+            // Update IEC reference box
+            const iecReferenceBoxBasic = document.getElementById('iecReferenceBoxBasic');
+            iecReferenceBoxBasic.innerHTML = `<span class="font-bold">תעריף בסיס חברת החשמל:</span> <span class="font-bold text-slate-900 dark:text-slate-100">₪${monthlyBill.toFixed(0)}</span> לחודש`;
             
             // Filter: StartHour=0, EndHour=24, Not Sunday-Thursday specific (Flat Rate)
             const fixedPlans = providerPlans.filter(p => p.id !== 'iec' && p.startHour === 0 && p.endHour === 24 && !p.isSunThu);
