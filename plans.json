@@ -103,8 +103,13 @@
   {
     "id": "cellcom_fixed",
     "name": "סלקום - קבוע",
-    "desc": "5% הנחה קבועה בכל שעות היממה",
-    "discount": 0.05,
+    "desc": "הנחה מדורגת לפי גובה חשבון: עד 149₪ 10%, 150-199₪ 8%, 200-299₪ 6%, מ-300₪ 5%",
+    "tieredDiscounts": [
+      {"max": 149, "discount": 0.10},
+      {"max": 199, "discount": 0.08},
+      {"max": 299, "discount": 0.06},
+      {"max": null, "discount": 0.05}
+    ],
     "startHour": 0,
     "endHour": 24,
     "isSunThu": false

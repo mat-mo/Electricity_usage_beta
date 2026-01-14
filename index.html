@@ -278,9 +278,17 @@
             const fixedPlans = providerPlans.filter(p => p.id !== 'iec' && p.startHour === 0 && p.endHour === 24 && !p.isSunThu);
 
             const results = fixedPlans.map(p => {
-                // Handle growing discount (avg) or fixed
+                // Handle tiered discounts, growing discount (avg), or fixed
                 let avgDiscount = 0;
-                if (p.discounts) {
+                if (p.tieredDiscounts) {
+                    // Find the appropriate tier based on monthly bill
+                    for (const tier of p.tieredDiscounts) {
+                        if (tier.max === null || monthlyBill <= tier.max) {
+                            avgDiscount = tier.discount;
+                            break;
+                        }
+                    }
+                } else if (p.discounts) {
                     avgDiscount = p.discounts.reduce((a, b) => a + b, 0) / p.discounts.length;
                 } else {
                     avgDiscount = p.discount;
@@ -298,6 +306,7 @@
             results.sort((a, b) => b.annualSaving - a.annualSaving);
 
             tbody.innerHTML = results.map(p => {
+                // Calculate monthly cost - for tiered discounts, use the discount from avgDiscount
                 const monthlyCost = monthlyBill * (1 - p.avgDiscount);
                 return `
                 <tr class="border-b dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition">
@@ -448,6 +457,46 @@
                 let yearSavingsArr = [];
                 let currentAvgMonthlyCost = 0;
                 let averageAnnualSavings = 0;
+                
+                // Handle tiered discounts
+                if (p.tieredDiscounts) {
+                    // First calculate monthly cost without discount to determine tier
+                    let baseYearCost = 0;
+                    data.forEach(r => {
+                        const timeMatch = isInsideWindow(r.hour, p.startHour, p.endHour);
+                        const dayMatch = p.isSunThu ? isSunThu(r.day) : true;
+                        if (timeMatch && dayMatch) {
+                            baseYearCost += r.kwh * BASE_RATE;
+                        }
+                    });
+                    const baseMonthlyCost = (baseYearCost / daysCount * 365) / 12;
+                    
+                    // Find the appropriate tier based on monthly cost
+                    let tierDiscount = 0.05; // default
+                    for (const tier of p.tieredDiscounts) {
+                        if (tier.max === null || baseMonthlyCost <= tier.max) {
+                            tierDiscount = tier.discount;
+                            break;
+                        }
+                    }
+                    
+                    // Calculate with tiered discount
+                    let yearCost = 0;
+                    data.forEach(r => {
+                        const timeMatch = isInsideWindow(r.hour, p.startHour, p.endHour);
+                        const dayMatch = p.isSunThu ? isSunThu(r.day) : true;
+                        const discount = (timeMatch && dayMatch) ? tierDiscount : 0;
+                        yearCost += r.kwh * (BASE_RATE * (1 - discount));
+                    });
+                    let rawYearlySaving = (iecTotal - yearCost) / daysCount * 365;
+                    if (p.maxYearlyDiscount && rawYearlySaving > p.maxYearlyDiscount) rawYearlySaving = p.maxYearlyDiscount;
+                    if (p.maxMonthlyDiscount && rawYearlySaving > (p.maxMonthlyDiscount * 12)) rawYearlySaving = p.maxMonthlyDiscount * 12;
+                    averageAnnualSavings = rawYearlySaving;
+                    currentAvgMonthlyCost = (yearCost / daysCount * 365) / 12;
+                    return { ...p, yearSavingsArr: [rawYearlySaving], averageAnnualSavings, currentAvgMonthlyCost };
+                }
+                
+                // Handle regular discounts (growing or fixed)
                 let discounts = p.discounts ? p.discounts : [p.discount];
                 let totalSavingsSum = 0;
 
