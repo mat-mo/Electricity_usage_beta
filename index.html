@@ -280,11 +280,14 @@
             const results = fixedPlans.map(p => {
                 // Handle tiered discounts, growing discount (avg), or fixed
                 let avgDiscount = 0;
+                let displayName = p.name;
                 if (p.tieredDiscounts) {
                     // Find the appropriate tier based on monthly bill
                     for (const tier of p.tieredDiscounts) {
                         if (tier.max === null || monthlyBill <= tier.max) {
                             avgDiscount = tier.discount;
+                            // Append discount percentage to plan name
+                            displayName = `${p.name} (${(tier.discount * 100).toFixed(0)}%)`;
                             break;
                         }
                     }
@@ -300,7 +303,7 @@
                 if (p.maxYearlyDiscount && annualSaving > p.maxYearlyDiscount) annualSaving = p.maxYearlyDiscount;
                 if (p.maxMonthlyDiscount && annualSaving > (p.maxMonthlyDiscount * 12)) annualSaving = p.maxMonthlyDiscount * 12;
 
-                return { ...p, annualSaving, avgDiscount };
+                return { ...p, annualSaving, avgDiscount, displayName };
             });
 
             results.sort((a, b) => b.annualSaving - a.annualSaving);
@@ -310,7 +313,7 @@
                 const monthlyCost = monthlyBill * (1 - p.avgDiscount);
                 return `
                 <tr class="border-b dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition">
-                    <td class="p-4 font-bold text-slate-800 dark:text-slate-200">${p.name}</td>
+                    <td class="p-4 font-bold text-slate-800 dark:text-slate-200">${p.displayName || p.name}</td>
                     <td class="p-4 text-sm text-slate-600 dark:text-slate-400">${p.desc}</td>
                     <td class="p-4 font-bold text-center">₪${monthlyCost.toFixed(0)}</td>
                     <td class="p-4 font-bold text-lg text-blue-600 dark:text-blue-400">₪${p.annualSaving.toFixed(0)}</td>
@@ -480,6 +483,9 @@
                         }
                     }
                     
+                    // Create display name with discount percentage
+                    const displayName = `${p.name} (${(tierDiscount * 100).toFixed(0)}%)`;
+                    
                     // Calculate with tiered discount
                     let yearCost = 0;
                     data.forEach(r => {
@@ -493,7 +499,7 @@
                     if (p.maxMonthlyDiscount && rawYearlySaving > (p.maxMonthlyDiscount * 12)) rawYearlySaving = p.maxMonthlyDiscount * 12;
                     averageAnnualSavings = rawYearlySaving;
                     currentAvgMonthlyCost = (yearCost / daysCount * 365) / 12;
-                    return { ...p, yearSavingsArr: [rawYearlySaving], averageAnnualSavings, currentAvgMonthlyCost };
+                    return { ...p, yearSavingsArr: [rawYearlySaving], averageAnnualSavings, currentAvgMonthlyCost, displayName };
                 }
                 
                 // Handle regular discounts (growing or fixed)
@@ -539,7 +545,7 @@
                     savingsDisplay = `<div class="text-lg font-bold ${p.averageAnnualSavings > 0 ? 'text-green-600 dark:text-green-400' : 'text-slate-400'}">${p.averageAnnualSavings > 0 ? '₪' + p.averageAnnualSavings.toFixed(0) : '-'}</div>`;
                 }
 
-                return `<tr class="border-b dark:border-slate-700 transition ${i === 0 ? 'bg-green-50/50 dark:bg-green-900/20' : ''}"><td class="p-4"><div class="font-bold text-slate-800 dark:text-slate-200">${p.name}</div><div class="mt-1">${badges}</div></td><td class="p-4 text-xs text-slate-500 dark:text-slate-400">${p.desc}</td><td class="p-4 font-bold text-center">₪${p.currentAvgMonthlyCost.toFixed(0)}</td><td class="p-4">${savingsDisplay}</td></tr>`;
+                return `<tr class="border-b dark:border-slate-700 transition ${i === 0 ? 'bg-green-50/50 dark:bg-green-900/20' : ''}"><td class="p-4"><div class="font-bold text-slate-800 dark:text-slate-200">${p.displayName || p.name}</div><div class="mt-1">${badges}</div></td><td class="p-4 text-xs text-slate-500 dark:text-slate-400">${p.desc}</td><td class="p-4 font-bold text-center">₪${p.currentAvgMonthlyCost.toFixed(0)}</td><td class="p-4">${savingsDisplay}</td></tr>`;
             }).join('');
             document.getElementById('dashboard').classList.remove('hidden');
             renderCharts(data);
