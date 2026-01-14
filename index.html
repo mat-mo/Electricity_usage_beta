@@ -179,7 +179,7 @@
                             <span class="w-4 h-4 rounded-full bg-green-500"></span> <span>לילה 23:00-07:00</span>
                         </div>
                         <div class="flex items-center gap-2">
-                            <span class="w-4 h-4 rounded-full bg-orange-500"></span> <span>יום 08:00-17:00</span>
+                            <span class="w-4 h-4 rounded-full bg-yellow-500"></span> <span>יום 08:00-17:00</span>
                         </div>
                         <div class="flex items-center gap-2">
                             <span class="w-4 h-4 rounded-full bg-red-500"></span> <span>שיא 17:00-23:00</span>
@@ -488,7 +488,7 @@
             if (charts.radar) charts.radar.destroy();
             charts.radar = new Chart(document.getElementById('hourlyRadarChart'), { type: 'radar', data: { labels: Array.from({length: 24}, (_, i) => i.toString().padStart(2, '0') + ':00'), datasets: [{ data: Array.from({length: 24}, (_, i) => hSum[i]/hCnt[i]), backgroundColor: isDark ? 'rgba(99, 102, 241, 0.3)' : 'rgba(99, 102, 241, 0.1)', borderColor: '#6366f1', pointBackgroundColor: Array.from({length: 24}, (_, i) => {
                 if (i >= 23 || i < 7) return '#22c55e'; // לילה 23:00-07:00 - green
-                if (i >= 8 && i < 17) return '#f97316'; // יום 08:00-17:00 - orange
+                if (i >= 8 && i < 17) return '#eab308'; // יום 08:00-17:00 - yellow
                 return '#ef4444'; // שיא 17:00-23:00 - red
             }) }] }, options: { responsive: true, maintainAspectRatio: false, scales: { r: { beginAtZero: true, ticks: { display: false }, pointLabels: { color: textColor, font: { family: 'Heebo', size: 12 } }, grid: { color: gridColor }, angleLines: { color: gridColor } } }, plugins: { legend: { display: false } } } });
             if (charts.daily) charts.daily.destroy();
