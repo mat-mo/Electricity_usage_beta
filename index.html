@@ -15,6 +15,49 @@
         .glass-card { backdrop-filter: blur(10px); }
         .fade-in { animation: fadeIn 0.5s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Custom Autocomplete Dropdown */
+        .autocomplete-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            left: 0;
+            max-height: 200px;
+            overflow-y: auto;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-top: none;
+            border-radius: 0 0 0.5rem 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            z-index: 50;
+            display: none;
+        }
+        .dark .autocomplete-dropdown {
+            background: #334155;
+            border-color: #475569;
+        }
+        .autocomplete-dropdown.show {
+            display: block;
+        }
+        .autocomplete-option {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            transition: background-color 0.15s;
+        }
+        .autocomplete-option:hover,
+        .autocomplete-option.highlighted {
+            background: #f1f5f9;
+        }
+        .dark .autocomplete-option:hover,
+        .dark .autocomplete-option.highlighted {
+            background: #475569;
+        }
+        .autocomplete-option:active {
+            background: #e2e8f0;
+        }
+        .dark .autocomplete-option:active {
+            background: #64748b;
+        }
     </style>
 </head>
 <body class="bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 min-h-screen py-12 px-4 transition-colors duration-300">
@@ -58,13 +101,13 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 <div class="relative">
                     <label class="block text-sm font-medium mb-1">עיר</label>
-                    <input type="text" id="cityInput" list="cityList" class="w-full p-3 rounded-lg border dark:bg-slate-700 dark:border-slate-600 focus:ring-2 focus:ring-indigo-500" placeholder="התחילו להקליד שם עיר...">
-                    <datalist id="cityList"></datalist>
+                    <input type="text" id="cityInput" autocomplete="off" class="w-full p-3 rounded-lg border dark:bg-slate-700 dark:border-slate-600 focus:ring-2 focus:ring-indigo-500" placeholder="התחילו להקליד שם עיר...">
+                    <div id="cityDropdown" class="autocomplete-dropdown"></div>
                 </div>
                 <div class="relative">
                     <label class="block text-sm font-medium mb-1">רחוב</label>
-                    <input type="text" id="streetInput" list="streetList" class="w-full p-3 rounded-lg border dark:bg-slate-700 dark:border-slate-600 focus:ring-2 focus:ring-indigo-500" placeholder="שם רחוב..." disabled>
-                    <datalist id="streetList"></datalist>
+                    <input type="text" id="streetInput" autocomplete="off" class="w-full p-3 rounded-lg border dark:bg-slate-700 dark:border-slate-600 focus:ring-2 focus:ring-indigo-500" placeholder="שם רחוב..." disabled>
+                    <div id="streetDropdown" class="autocomplete-dropdown"></div>
                 </div>
                 <div class="relative">
                     <label class="block text-sm font-medium mb-1">מספר בית</label>
@@ -328,43 +371,163 @@
         const numberInput = document.getElementById('numberInput');
         const checkBtn = document.getElementById('checkAddressBtn');
         const statusMsg = document.getElementById('statusMessage');
+        const cityDropdown = document.getElementById('cityDropdown');
+        const streetDropdown = document.getElementById('streetDropdown');
 
-        function populateCities(cities) {
-            const cityList = document.getElementById('cityList');
-            cities.forEach(city => {
-                const opt = document.createElement('option');
-                opt.value = city;
-                cityList.appendChild(opt);
+        let allCities = [];
+        let allStreets = [];
+        let highlightedIndex = -1;
+
+        // Autocomplete helper functions
+        function setupAutocomplete(input, dropdown, getItems, onSelect) {
+            let items = [];
+            let highlighted = -1;
+
+            function showDropdown(filteredItems) {
+                items = filteredItems;
+                highlighted = -1;
+                if (items.length === 0) {
+                    dropdown.classList.remove('show');
+                    return;
+                }
+                dropdown.innerHTML = items.slice(0, 50).map((item, i) =>
+                    `<div class="autocomplete-option" data-index="${i}">${item}</div>`
+                ).join('');
+                dropdown.classList.add('show');
+            }
+
+            function hideDropdown() {
+                dropdown.classList.remove('show');
+                highlighted = -1;
+            }
+
+            function selectItem(value) {
+                input.value = value;
+                hideDropdown();
+                onSelect(value);
+            }
+
+            function updateHighlight() {
+                const options = dropdown.querySelectorAll('.autocomplete-option');
+                options.forEach((opt, i) => {
+                    opt.classList.toggle('highlighted', i === highlighted);
+                });
+                if (highlighted >= 0 && options[highlighted]) {
+                    options[highlighted].scrollIntoView({ block: 'nearest' });
+                }
+            }
+
+            // Input event - filter and show dropdown
+            input.addEventListener('input', () => {
+                const value = input.value.trim().toLowerCase();
+                if (value.length === 0) {
+                    showDropdown(getItems().slice(0, 50));
+                } else {
+                    const filtered = getItems().filter(item =>
+                        item.toLowerCase().includes(value)
+                    );
+                    showDropdown(filtered);
+                }
             });
+
+            // Focus event - show dropdown
+            input.addEventListener('focus', () => {
+                const value = input.value.trim().toLowerCase();
+                if (value.length === 0) {
+                    showDropdown(getItems().slice(0, 50));
+                } else {
+                    const filtered = getItems().filter(item =>
+                        item.toLowerCase().includes(value)
+                    );
+                    showDropdown(filtered);
+                }
+            });
+
+            // Keyboard navigation
+            input.addEventListener('keydown', (e) => {
+                if (!dropdown.classList.contains('show')) return;
+
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    highlighted = Math.min(highlighted + 1, items.length - 1);
+                    updateHighlight();
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    highlighted = Math.max(highlighted - 1, 0);
+                    updateHighlight();
+                } else if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (highlighted >= 0 && items[highlighted]) {
+                        selectItem(items[highlighted]);
+                    }
+                } else if (e.key === 'Escape') {
+                    hideDropdown();
+                }
+            });
+
+            // Click/touch on dropdown options
+            dropdown.addEventListener('click', (e) => {
+                const option = e.target.closest('.autocomplete-option');
+                if (option) {
+                    const index = parseInt(option.dataset.index);
+                    if (items[index]) {
+                        selectItem(items[index]);
+                    }
+                }
+            });
+
+            // Prevent mousedown from stealing focus from input
+            dropdown.addEventListener('mousedown', (e) => {
+                e.preventDefault();
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+                    hideDropdown();
+                }
+            });
+
+            return { showDropdown, hideDropdown };
         }
 
-        cityInput.addEventListener('change', async () => {
-            const city = cityInput.value;
-            streetInput.value = '';
-            streetInput.disabled = true;
-            numberInput.disabled = true;
-            document.getElementById('streetList').innerHTML = '';
-            currentCityData = null;
+        function populateCities(cities) {
+            allCities = cities.sort();
+            setupAutocomplete(
+                cityInput,
+                cityDropdown,
+                () => allCities,
+                async (city) => {
+                    streetInput.value = '';
+                    streetInput.disabled = true;
+                    numberInput.disabled = true;
+                    allStreets = [];
+                    currentCityData = null;
 
-            if (city) {
-                try {
-                    const safeFilename = city.replace(/"/g, '').replace(/\//g, '-').replace(/\\/g, '-');
-                    const res = await fetch(`data/${safeFilename}.json`);
-                    if (res.ok) {
-                        currentCityData = await res.json();
-                        streetInput.disabled = false;
-                        const streetList = document.getElementById('streetList');
-                        Object.keys(currentCityData).sort().forEach(street => {
-                            const opt = document.createElement('option');
-                            opt.value = street;
-                            streetList.appendChild(opt);
-                        });
+                    if (city) {
+                        try {
+                            const safeFilename = city.replace(/"/g, '').replace(/\//g, '-').replace(/\\/g, '-');
+                            const res = await fetch(`data/${safeFilename}.json`);
+                            if (res.ok) {
+                                currentCityData = await res.json();
+                                streetInput.disabled = false;
+                                allStreets = Object.keys(currentCityData).sort();
+                            }
+                        } catch (err) { console.error("City data not found", err); }
                     }
-                } catch (err) { console.error("City data not found", err); }
-            }
-        });
+                }
+            );
+        }
 
-        streetInput.addEventListener('change', () => { if (streetInput.value) numberInput.disabled = false; });
+        // Setup street autocomplete
+        setupAutocomplete(
+            streetInput,
+            streetDropdown,
+            () => allStreets,
+            (street) => {
+                if (street) numberInput.disabled = false;
+            }
+        );
 
         checkBtn.addEventListener('click', () => {
             const city = cityInput.value;
